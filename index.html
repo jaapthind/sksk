@@ -3,133 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Docs - Multi-Tool Workspace</title>
+    <title>Google Docs - Dev Workspace</title>
     <link rel="icon" type="image/x-icon" href="https://www.google.com/favicon.ico">
     <style>
-        :root { --bg: #0b0c10; --panel: #161b22; --accent: #58a6ff; --text: #c9d1d9; --border: #30363d; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
-
-        /* CHAT SIDEBAR */
-        #chat-sidebar { width: 350px; background: #010409; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-        .side-header { padding: 15px; background: var(--panel); font-weight: bold; font-size: 12px; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
-
-        /* MAIN GRID */
-        #main-scroll { flex-grow: 1; overflow-y: auto; padding: 25px; scroll-behavior: smooth; }
-        .stat-bar { display: flex; gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--panel); padding: 15px 25px; border-radius: 8px; border: 1px solid var(--border); flex: 1; }
-
-        .dashboard-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
-            gap: 15px; 
+        :root {
+            --bg: #0d1117; --side: #161b22; --card: #21262d; --border: #30363d;
+            --text: #c9d1d9; --accent: #58a6ff; --google-bg: #202124;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body, html { width: 100%; height: 100%; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
 
-        /* WIDGET DESIGN */
-        .difget { 
-            background: var(--panel); border-radius: 12px; padding: 18px; text-align: center; 
-            cursor: pointer; border: 1px solid var(--border); transition: all 0.2s ease-in-out;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        /* WILLARD CHAT SIDEBAR */
+        #willard-sidebar {
+            width: 380px; height: 100%; background: var(--side); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; z-index: 1000; position: relative;
         }
-        .difget:hover { border-color: var(--accent); background: #1c2128; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-        .difget i { font-size: 24px; margin-bottom: 8px; font-style: normal; }
-        .difget p { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #8b949e; }
+        .sidebar-brand { padding: 20px; background: #010409; font-size: 12px; font-weight: bold; color: var(--accent); border-bottom: 1px solid var(--border); }
 
-        /* TOOL OVERLAY */
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; }
-        #tool-container { width: 90%; height: 90%; margin: 2.5% auto; background: #fff; border-radius: 15px; overflow: hidden; position: relative; }
-        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 40px; color: #000; cursor: pointer; z-index: 10001; }
+        /* DESKTOP AREA */
+        #desktop { flex-grow: 1; height: 100%; position: relative; overflow-y: auto; padding: 40px; background: radial-gradient(circle at center, #1a1c23 0%, #0d1117 100%); }
+        .nexus-title { font-size: 32px; font-weight: 300; margin-bottom: 10px; color: #fff; }
+        .nexus-sub { font-size: 13px; color: #8b949e; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
 
-        /* BOSS SCREEN */
-        #boss { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 20000; flex-direction: column; align-items: center; padding-top: 15vh; }
+        /* 50+ WIDGET GRID */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding-bottom: 100px; }
+        .item { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; 
+            text-align: center; cursor: pointer; transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .item:hover { transform: translateY(-5px); border-color: var(--accent); background: #2d333b; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .item i { font-size: 32px; display: block; margin-bottom: 15px; }
+        .item b { font-size: 14px; color: #fff; }
+
+        /* WINDOW SYSTEM */
+        .win { 
+            position: fixed; top: 15%; left: 25%; width: 600px; height: 450px; 
+            background: var(--side); border: 1px solid var(--accent); border-radius: 12px; 
+            z-index: 5000; display: none; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .win-head { background: #010409; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); cursor: move; }
+        .win-body { flex-grow: 1; padding: 20px; overflow: hidden; position: relative; }
+        .x-btn { color: #f85149; font-weight: bold; cursor: pointer; font-size: 20px; }
+
+        /* FOOLPROOF GHOST MODE */
+        #ghost { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--google-bg); z-index: 999999; overflow-y: scroll; color: #e8eaed; 
+        }
+        .g-nav { border-bottom: 1px solid #3c4043; padding: 20px 160px; position: sticky; top: 0; background: var(--google-bg); }
+        .g-results { margin-left: 160px; margin-top: 30px; max-width: 650px; }
+        .g-card { margin-bottom: 35px; }
+        .g-card h3 { color: #8ab4f8; font-size: 20px; font-weight: 400; cursor: pointer; margin-bottom: 5px; }
+        .g-card p { font-size: 14px; color: #bdc1c6; line-height: 1.6; }
+
+        /* BUILT-IN MINI GAMES */
+        #game-canvas { background: #000; width: 100%; height: 100%; border-radius: 8px; }
     </style>
 </head>
-<body>
+<body style="display: flex;">
 
-    <div id="boss">
-        <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" width="272">
-        <input type="text" style="width: 584px; height: 44px; border: 1px solid #dfe1e5; border-radius: 24px; margin-top: 25px; padding: 0 20px;" placeholder="Search Google Drive...">
-    </div>
-
-    <div id="chat-sidebar">
-        <div class="side-header">COMMUNICATION_RELAY // SECURE</div>
+    <div id="willard-sidebar">
+        <div class="sidebar-brand">SYSTEM_WILLARD // ENCRYPTED_LINK</div>
         <iframe src="https://deadsimplechat.com/J4fFLy4Ek" width="100%" height="100%" frameborder="0"></iframe>
     </div>
 
-    <div id="main-scroll">
-        <div class="stat-bar">
-            <div class="stat-card"> <small>CPU_LOAD</small> <div style="color:var(--accent); font-size:20px; font-weight:bold;">24%</div> </div>
-            <div class="stat-card"> <small>NETWORK_LATENCY</small> <div style="color:#3fb950; font-size:20px; font-weight:bold;">12ms</div> </div>
-            <div class="stat-card"> <small>ACTIVE_WIDGETS</small> <div style="color:#f85149; font-size:20px; font-weight:bold;">52</div> </div>
-        </div>
+    <div id="desktop">
+        <h1 class="nexus-title">Willard Nexus Terminal</h1>
+        <p class="nexus-sub">Active Session: 19.02.2026 // MSI-GF63-V3 // C++ COMPILER READY</p>
 
-        <div class="dashboard-grid" id="nexus-grid">
-            <div class="difget" onclick="openTool('https://quickdraw.withgoogle.com/')"><i>✏️</i><p>AI QuickDraw</p></div>
-            <div class="difget" onclick="openTool('https://www.wolframalpha.com/')"><i>⚛️</i><p>Wolfram Engine</p></div>
-            <div class="difget" onclick="openTool('https://musiclab.chromeexperiments.com/Shared-Piano/')"><i>🎹</i><p>Shared Piano</p></div>
-            <div class="difget" onclick="openTool('https://stars.chromeexperiments.com/')"><i>✨</i><p>100k Stars</p></div>
-            <div class="difget" onclick="openTool('https://www.desmos.com/calculator')"><i>📊</i><p>Graph Engine</p></div>
-            <div class="difget" onclick="openTool('https://www.shadertoy.com/embed/lsfGRr')"><i>🌈</i><p>GPU Shader</p></div>
-            <div class="difget" onclick="openTool('https://neal.fun/deep-sea/')"><i>🌊</i><p>Deep Sea</p></div>
-            <div class="difget" onclick="openTool('https://experiments.withgoogle.com/autodraw')"><i>🎨</i><p>AI AutoDraw</p></div>
-            <div class="difget" onclick="openTool('https://www.autodraw.com/')"><i>🤖</i><p>AI Sketch</p></div>
-            <div class="difget" onclick="openTool('https://www.webgl-fluids.com/')"><i>💧</i><p>Fluid Sim</p></div>
+        <div class="grid" id="main-grid">
+            <div class="item" onclick="openWin('Matrix')"><i>💾</i><b>Matrix Sim</b></div>
+            <div class="item" onclick="openWin('NeonPath')"><i>🚀</i><b>Neon Path AI</b></div>
+            <div class="item" onclick="openWin('Physics')"><i>⚛️</i><b>Physics Lab</b></div>
+            <div class="item" onclick="openWin('Terminal')"><i>📟</i><b>Nexus CLI</b></div>
+            <div class="item" onclick="openWin('Weather')"><i>☁️</i><b>World Stats</b></div>
         </div>
     </div>
 
-    <div id="overlay">
-        <span class="close-btn" onclick="closeTool()">&times;</span>
-        <div id="tool-container">
-            <iframe id="tool-frame" src="" style="width:100%; height:100%; border:none;"></iframe>
+    <div id="win-Matrix" class="win">
+        <div class="win-head"><span>Matrix Code Stream</span><span class="x-btn" onclick="closeWin('Matrix')">×</span></div>
+        <div class="win-body"><canvas id="matrix-canvas"></canvas></div>
+    </div>
+
+    <div id="win-NeonPath" class="win">
+        <div class="win-head"><span>AI Neon Path (Mini Game)</span><span class="x-btn" onclick="closeWin('NeonPath')">×</span></div>
+        <div class="win-body">
+            <div id="game-ui" style="position:absolute; top:10px; left:10px; color:#fff;">Score: <span id="score">0</span></div>
+            <canvas id="game-canvas"></canvas>
         </div>
+    </div>
+
+    <div id="ghost">
+        <div class="g-nav">
+            <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_92x30dp.png" width="92" style="position:absolute; left:30px; top:25px;">
+            <input type="text" style="width: 692px; height: 46px; background: #303134; border: 1px solid #3c4043; border-radius: 24px; padding: 0 20px; color: white;" value="most important black history figures">
+        </div>
+        <div class="g-results" id="ghost-results"></div>
     </div>
 
     <script>
-        // Generate the other 40+ widgets automatically
-        const grid = document.getElementById('nexus-grid');
-        const items = [
-            {n: "Weather Map", i: "☁️"}, {n: "Clock Sync", i: "⏱️"}, {n: "Unit Conv", i: "⚖️"},
-            {n: "Color Palette", i: "🎨"}, {n: "Sound Board", i: "🔊"}, {n: "Logic Gate", i: "🕹️"},
-            {n: "IP Lookup", i: "🌐"}, {n: "Hex Editor", i: "🔢"}, {n: "Password Gen", i: "🔑"},
-            {n: "Diff Tool", i: "📝"}, {n: "MD5 Hash", i: "🔐"}, {n: "Base64", i: "🔠"},
-            {n: "System Log", i: "📋"}, {n: "Network Ping", i: "📡"}, {n: "CSS Flex", i: "📐"},
-            {n: "JSON Formatter", i: "📦"}, {n: "Markdown", i: "🖊️"}, {n: "ASCII Art", i: "🖼️"},
-            {n: "Timer", i: "⏲️"}, {n: "Stopwatch", i: "⏱️"}, {n: "Morse Code", i: "🚥"},
-            {n: "Translator", i: "🌍"}, {n: "Currency", i: "💵"}, {n: "QR Gen", i: "🏁"},
-            {n: "Compass", i: "🧭"}, {n: "Leveler", i: "📏"}, {n: "Magnifier", i: "🔍"},
-            {n: "Metronome", i: "🎵"}, {n: "Periodic Table", i: "🧪"}, {n: "Formula Lab", i: "📓"},
-            {n: "Gravity Sim", i: "🪐"}, {n: "Earth 3D", i: "🌍"}, {n: "Satellite", i: "🛰️"},
-            {n: "Flight Track", i: "✈️"}, {n: "Train Map", i: "🚆"}, {n: "Crypto Feed", i: "🪙"},
-            {n: "Stock Ticker", i: "📈"}, {n: "Daily News", i: "📰"}, {n: "Wiki Random", i: "📚"},
-            {n: "Wordle Clone", i: "🔡"}, {n: "Sudoku", i: "🔢"}, {n: "2048", i: "🎲"}
-        ];
+        // GENERATE 50+ WIDGETS
+        const grid = document.getElementById('main-grid');
+        const tools = ["LogicMap", "NetPing", "HexEdit", "DataVault", "SysLog", "Kernel", "Vector", "BitShift"];
+        const icons = ["🛠️", "📡", "🔢", "🔐", "📋", "⚙️", "📐", "💾"];
+        for(let i=0; i<45; i++) {
+            let r = i % tools.length;
+            grid.innerHTML += `<div class="item" onclick="alert('Module ${i} requires C++ Link')"><i>${icons[r]}</i><b>${tools[r]}_${i}</b></div>`;
+        }
 
-        items.forEach(item => {
-            grid.innerHTML += `
-                <div class="difget" onclick="openTool('https://www.google.com/search?q=${item.n}+tool&igu=1')">
-                    <i>${item.i}</i>
-                    <p>${item.n}</p>
+        // GENERATE 50+ GOOGLE RESULTS
+        const gResults = document.getElementById('ghost-results');
+        for(let i=0; i<60; i++) {
+            gResults.innerHTML += `
+                <div class="g-card">
+                    <h3>Historical Significance of Figure #${i+1}</h3>
+                    <p>Analysis of social impact and leadership during key historical periods. Source verified by ResearchGate.</p>
                 </div>`;
-        });
-
-        function openTool(url) {
-            document.getElementById('tool-frame').src = url;
-            document.getElementById('overlay').style.display = 'block';
-        }
-        function closeTool() {
-            document.getElementById('tool-frame').src = '';
-            document.getElementById('overlay').style.display = 'none';
         }
 
-        // BOSS KEY (ESC)
+        // WINDOW CONTROLS
+        function openWin(id) { document.getElementById('win-' + id).style.display = 'flex'; if(id==='NeonPath') startNeonGame(); }
+        function closeWin(id) { document.getElementById('win-' + id).style.display = 'none'; }
+
+        // GHOST MODE ESC LOGIC
         document.addEventListener('keydown', (e) => {
             if (e.key === "Escape") {
-                const boss = document.getElementById('boss');
-                const isVisible = boss.style.display === 'flex';
-                boss.style.display = isVisible ? 'none' : 'flex';
-                document.title = isVisible ? "Google Docs - Multi-Tool Workspace" : "Google";
+                const ghost = document.getElementById('ghost');
+                const isOff = ghost.style.display === 'none' || ghost.style.display === '';
+                ghost.style.display = isOff ? 'block' : 'none';
+                document.title = isOff ? "most important black history figures - Google Search" : "Google Docs - Dev Workspace";
             }
         });
+
+        // AI MINI GAME: NEON PATH
+        function startNeonGame() {
+            const canvas = document.getElementById('game-canvas');
+            const ctx = canvas.getContext('2d');
+            let player = { x: 50, y: 150, w: 20, h: 20 };
+            let obstacles = [];
+            let score = 0;
+            function update() {
+                ctx.fillStyle = "#000"; ctx.fillRect(0,0,canvas.width,canvas.height);
+                ctx.fillStyle = "#58a6ff"; ctx.fillRect(player.x, player.y, player.w, player.h);
+                if(Math.random() < 0.05) obstacles.push({x: 600, y: Math.random()*300, w: 20, h: 20});
+                obstacles.forEach((o, i) => {
+                    o.x -= 5; ctx.fillStyle = "#f85149"; ctx.fillRect(o.x, o.y, o.w, o.h);
+                    if(o.x < -20) { obstacles.splice(i, 1); score++; document.getElementById('score').innerText = score; }
+                });
+                requestAnimationFrame(update);
+            }
+            update();
+            window.onkeydown = (e) => { if(e.key === 'w') player.y -= 20; if(e.key === 's') player.y += 20; };
+        }
     </script>
 </body>
 </html>
