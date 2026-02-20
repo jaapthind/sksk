@@ -8,24 +8,23 @@
     <style>
         :root { --primary: #4285f4; --bg: #0b0b0b; --card: #1a1a1a; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Arial', sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
+        body { font-family: 'Arial', sans-serif; background: var(--bg); color: white; overflow: hidden; }
 
-        header { padding: 25px; text-align: center; background: #000; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; }
-        .search-bar { width: 90%; max-width: 600px; padding: 12px 25px; border-radius: 25px; border: 1px solid #333; background: #202124; color: white; outline: none; }
+        header { padding: 25px; text-align: center; background: #000; border-bottom: 2px solid var(--primary); }
         
-        .container { padding: 25px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
-        .game-card { background: var(--card); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; border: 1px solid #222; transition: 0.2s; }
+        /* The Grid */
+        .container { padding: 25px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; max-width: 900px; margin: 0 auto; }
+        .game-card { background: var(--card); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; border: 1px solid #222; transition: 0.2s; }
         .game-card:hover { transform: translateY(-5px); border-color: var(--primary); background: #222; }
-        .game-card img { width: 60px; height: 60px; border-radius: 12px; margin-bottom: 8px; object-fit: cover; background: #333; }
-        .game-card p { font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .game-card img { width: 64px; height: 64px; border-radius: 12px; margin-bottom: 10px; }
+        .game-card p { font-size: 14px; font-weight: bold; }
 
-        /* Fullscreen Game Player */
+        /* Game Player Overlay */
         #game-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; }
         iframe { width: 100%; height: 100%; border: none; }
-        .close-btn { position: fixed; top: 10px; right: 20px; font-size: 40px; color: white; cursor: pointer; z-index: 6000; opacity: 0.5; }
-        .close-btn:hover { opacity: 1; }
+        .close-btn { position: fixed; top: 15px; right: 25px; font-size: 40px; color: white; cursor: pointer; z-index: 6000; opacity: 0.6; }
 
-        /* The Boss Screen Disguise */
+        /* Boss Screen Disguise */
         #boss-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 10000; flex-direction: column; align-items: center; padding-top: 15vh; }
         .google-logo { width: 272px; margin-bottom: 25px; }
         .fake-search { width: 584px; max-width: 90%; height: 44px; border: 1px solid #dfe1e5; border-radius: 24px; padding: 0 45px; font-size: 16px; outline: none; }
@@ -44,60 +43,47 @@
     </div>
 
     <header>
-        <input type="text" class="search-bar" id="search" placeholder="Search 100+ Games (ESC to Hide)..." onkeyup="filterGames()">
+        <h1 style="color: var(--primary);">Classroom Tools</h1>
     </header>
 
-    <div class="container" id="game-grid"></div>
+    <div class="container">
+        <div class="game-card" onclick="openGame('https://v7p9m8i5.ssl.hwcdn.net/html5/203417/index.html')">
+            <img src="https://basketballrandom.io/favicon.ico" alt="Basket">
+            <p>Basket Random</p>
+        </div>
+
+        <div class="game-card" onclick="openGame('https://kdata1.com/2020/05/slope/')">
+            <img src="https://slope-game.github.io/favicon.ico" alt="Slope">
+            <p>Slope</p>
+        </div>
+
+        <div class="game-card" onclick="openGame('https://game316311.konggames.com/gamefile/2020/09/01/1598947474747/index.html')">
+            <img src="https://retrobowl.me/favicon.ico" alt="Retro">
+            <p>Retro Bowl</p>
+        </div>
+
+        <div class="game-card" onclick="openGame('https://smashkarts.io/s/play')">
+            <img src="https://smashkarts.io/favicon.ico" alt="Smash">
+            <p>Smash Karts</p>
+        </div>
+
+        <div class="game-card" onclick="openGame('https://www.google.com/fbx?fbx=snake_arcade')">
+            <img src="https://www.google.com/favicon.ico" alt="Snake">
+            <p>Google Snake</p>
+        </div>
+    </div>
 
     <script>
-        // VERIFIED WORKING LINKS (No 404s)
-        const games = [
-            { name: "Basket Random", url: "https://v7p9m8i5.ssl.hwcdn.net/html5/203417/index.html", icon: "https://basketballrandom.io/favicon.ico" },
-            { name: "Slope", url: "https://kdata1.com/2020/05/slope/", icon: "https://slope-game.github.io/favicon.ico" },
-            { name: "Retro Bowl", url: "https://game316311.konggames.com/gamefile/2020/09/01/1598947474747/index.html", icon: "https://retrobowl.me/favicon.ico" },
-            { name: "Smash Karts", url: "https://smashkarts.io", icon: "https://smashkarts.io/favicon.ico" },
-            { name: "Geometry Dash", url: "https://v6p9d9t4.ssl.hwcdn.net/html5/115488/index.html", icon: "https://geometry-dash.io/favicon.ico" },
-            { name: "1v1.LOL", url: "https://1v1.lol", icon: "https://1v1.lol/favicon.ico" },
-            { name: "Tunnel Rush", url: "https://tunnelrush.io", icon: "" },
-            { name: "Drive Mad", url: "https://v6p9d9t4.ssl.hwcdn.net/html5/626514/index.html", icon: "" },
-            { name: "BitLife", url: "https://bitlifeonline.io", icon: "" },
-            { name: "Snake", url: "https://www.google.com/fbx?fbx=snake_arcade", icon: "https://www.google.com/favicon.ico" },
-            { name: "Minecraft", url: "https://eaglercraft.com/mc/1.8.8/", icon: "" },
-            { name: "Paper.io 2", url: "https://paper-io.com", icon: "" },
-            { name: "Moto X3M", url: "https://v6p9d9t4.ssl.hwcdn.net/html5/53641/index.html", icon: "" }
-        ];
-
-        // Fill up the list to hit 100+
-        for (let i = 1; i <= 90; i++) {
-            games.push({ name: "Mirror Game " + (i + 13), url: "https://titansmath.org", icon: "" });
-        }
-
-        function buildGrid() {
-            const grid = document.getElementById('game-grid');
-            grid.innerHTML = games.map(game => `
-                <div class="game-card" onclick="openGame('${game.url}')">
-                    <img src="${game.icon || 'https://www.google.com/favicon.ico'}" onerror="this.src='https://www.google.com/favicon.ico'">
-                    <p>${game.name}</p>
-                </div>
-            `).join('');
-        }
-
         function openGame(url) {
             document.getElementById('game-frame').src = url;
             document.getElementById('game-overlay').style.display = 'block';
-            document.title = "Classroom Notes"; // Stealth title
+            document.title = "Classroom Notes"; 
         }
 
         function closeGame() {
             document.getElementById('game-frame').src = '';
             document.getElementById('game-overlay').style.display = 'none';
             document.title = "Google";
-        }
-
-        function filterGames() {
-            let q = document.getElementById('search').value.toLowerCase();
-            let cards = document.getElementsByClassName('game-card');
-            for (let c of cards) c.style.display = c.innerText.toLowerCase().includes(q) ? 'block' : 'none';
         }
 
         // BOSS KEY (ESC)
@@ -116,8 +102,6 @@
         document.getElementById('boss-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(e.target.value);
         });
-
-        buildGrid();
     </script>
 </body>
 </html>
