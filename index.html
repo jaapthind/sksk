@@ -3,157 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Docs - Dev Workspace</title>
+    <title>Google Docs - Collaborative Hub</title>
     <link rel="icon" type="image/x-icon" href="https://www.google.com/favicon.ico">
     <style>
         :root {
             --bg: #0d1117; --side: #161b22; --card: #21262d; --border: #30363d;
             --text: #c9d1d9; --accent: #58a6ff; --google-bg: #202124;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
-        body, html { width: 100%; height: 100%; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
 
         /* WILLARD CHAT SIDEBAR */
         #willard-sidebar {
             width: 380px; height: 100%; background: var(--side); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; z-index: 1000; position: relative;
+            display: flex; flex-direction: column; z-index: 1000;
         }
-        .sidebar-brand { padding: 20px; background: #010409; font-size: 12px; font-weight: bold; color: var(--accent); border-bottom: 1px solid var(--border); }
+        .sidebar-brand { padding: 20px; background: #010409; font-size: 12px; font-weight: bold; color: var(--accent); border-bottom: 1px solid var(--border); letter-spacing: 2px; }
 
-        /* DESKTOP AREA */
-        #desktop { flex-grow: 1; height: 100%; position: relative; overflow-y: auto; padding: 40px; background: radial-gradient(circle at center, #1a1c23 0%, #0d1117 100%); }
-        .nexus-title { font-size: 32px; font-weight: 300; margin-bottom: 10px; color: #fff; }
-        .nexus-sub { font-size: 13px; color: #8b949e; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        /* DESKTOP ENVIRONMENT */
+        #desktop { flex-grow: 1; height: 100%; position: relative; overflow-y: auto; padding: 40px; background: radial-gradient(circle at 50% 50%, #1c1e26 0%, #0d1117 100%); }
+        .nexus-title { font-size: 38px; font-weight: 300; color: #fff; margin-bottom: 5px; }
+        .nexus-stats { display: flex; gap: 20px; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .stat { font-size: 12px; color: #8b949e; text-transform: uppercase; }
 
         /* 50+ WIDGET GRID */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding-bottom: 100px; }
-        .item { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; 
-            text-align: center; cursor: pointer; transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; padding-bottom: 150px; }
+        .widget {
+            background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 30px 20px;
+            text-align: center; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .item:hover { transform: translateY(-5px); border-color: var(--accent); background: #2d333b; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .item i { font-size: 32px; display: block; margin-bottom: 15px; }
-        .item b { font-size: 14px; color: #fff; }
+        .widget:hover { transform: scale(1.05); border-color: var(--accent); background: #2d333b; box-shadow: 0 15px 30px rgba(0,0,0,0.6); }
+        .widget i { font-size: 35px; display: block; margin-bottom: 15px; }
+        .widget b { font-size: 14px; color: #fff; display: block; }
+        .widget span { font-size: 11px; color: #8b949e; }
 
-        /* WINDOW SYSTEM */
-        .win { 
-            position: fixed; top: 15%; left: 25%; width: 600px; height: 450px; 
-            background: var(--side); border: 1px solid var(--accent); border-radius: 12px; 
-            z-index: 5000; display: none; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        /* ADVANCED WINDOW SYSTEM */
+        .window {
+            position: fixed; top: 100px; left: 450px; width: 700px; height: 500px;
+            background: var(--side); border: 1px solid var(--accent); border-radius: 12px;
+            z-index: 5000; display: none; flex-direction: column; box-shadow: 0 30px 60px rgba(0,0,0,0.9);
         }
-        .win-head { background: #010409; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); cursor: move; }
-        .win-body { flex-grow: 1; padding: 20px; overflow: hidden; position: relative; }
-        .x-btn { color: #f85149; font-weight: bold; cursor: pointer; font-size: 20px; }
+        .win-header { background: #010409; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); cursor: move; border-radius: 12px 12px 0 0; }
+        .win-body { flex-grow: 1; padding: 0; overflow: hidden; position: relative; background: #000; }
+        .close-btn { color: #ff5f56; font-size: 24px; cursor: pointer; line-height: 1; }
 
-        /* FOOLPROOF GHOST MODE */
-        #ghost { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--google-bg); z-index: 999999; overflow-y: scroll; color: #e8eaed; 
+        /* GHOST MODE (GOOGLE SEARCH REPLICA) */
+        #ghost {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--google-bg); z-index: 999999; overflow-y: scroll; color: #e8eaed;
         }
-        .g-nav { border-bottom: 1px solid #3c4043; padding: 20px 160px; position: sticky; top: 0; background: var(--google-bg); }
-        .g-results { margin-left: 160px; margin-top: 30px; max-width: 650px; }
-        .g-card { margin-bottom: 35px; }
-        .g-card h3 { color: #8ab4f8; font-size: 20px; font-weight: 400; cursor: pointer; margin-bottom: 5px; }
-        .g-card p { font-size: 14px; color: #bdc1c6; line-height: 1.6; }
+        .g-nav { border-bottom: 1px solid #3c4043; padding: 25px 160px; position: sticky; top: 0; background: var(--google-bg); }
+        .g-input-box { width: 692px; height: 46px; background: #303134; border: 1px solid #3c4043; border-radius: 24px; padding: 0 25px; color: #fff; font-size: 16px; outline: none; }
+        .g-results { margin-left: 160px; margin-top: 35px; max-width: 650px; padding-bottom: 200px; }
+        .g-res-card { margin-bottom: 40px; }
+        .g-res-card cite { font-style: normal; color: #bdc1c6; font-size: 14px; display: block; }
+        .g-res-card h3 { color: #8ab4f8; font-size: 20px; font-weight: 400; cursor: pointer; margin: 5px 0; }
+        .g-res-card p { font-size: 14px; color: #bdc1c6; line-height: 1.58; }
 
-        /* BUILT-IN MINI GAMES */
-        #game-canvas { background: #000; width: 100%; height: 100%; border-radius: 8px; }
+        /* BUILT-IN ARCADE */
+        canvas { width: 100%; height: 100%; display: block; }
     </style>
 </head>
 <body style="display: flex;">
 
     <div id="willard-sidebar">
-        <div class="sidebar-brand">SYSTEM_WILLARD // ENCRYPTED_LINK</div>
+        <div class="sidebar-brand">WILLARD_RELAY // ENCRYPTED</div>
         <iframe src="https://deadsimplechat.com/J4fFLy4Ek" width="100%" height="100%" frameborder="0"></iframe>
     </div>
 
     <div id="desktop">
-        <h1 class="nexus-title">Willard Nexus Terminal</h1>
-        <p class="nexus-sub">Active Session: 19.02.2026 // MSI-GF63-V3 // C++ COMPILER READY</p>
+        <h1 class="nexus-title">Collaborative Dashboard</h1>
+        <div class="nexus-stats">
+            <span class="stat">System: Active</span>
+            <span class="stat">Latency: 14ms</span>
+            <span class="stat">Storage: 2.4 TB Available</span>
+        </div>
 
         <div class="grid" id="main-grid">
-            <div class="item" onclick="openWin('Matrix')"><i>💾</i><b>Matrix Sim</b></div>
-            <div class="item" onclick="openWin('NeonPath')"><i>🚀</i><b>Neon Path AI</b></div>
-            <div class="item" onclick="openWin('Physics')"><i>⚛️</i><b>Physics Lab</b></div>
-            <div class="item" onclick="openWin('Terminal')"><i>📟</i><b>Nexus CLI</b></div>
-            <div class="item" onclick="openWin('Weather')"><i>☁️</i><b>World Stats</b></div>
+            <div class="widget" onclick="openApp('Tunnel')"><i>🌀</i><b>Neon Tunnel</b><span>3D Visualizer</span></div>
+            <div class="widget" onclick="openApp('Orbit')"><i>🪐</i><b>Gravity Sim</b><span>Physics Engine</span></div>
+            <div class="widget" onclick="openApp('Defender')"><i>🚀</i><b>Star Defender</b><span>Built-in Arcade</span></div>
+            <div class="widget" onclick="openApp('Paint')"><i>🎨</i><b>AI Sketch</b><span>Drawing Tool</span></div>
+            <div class="widget" onclick="openApp('Synth')"><i>🎹</i><b>Beat Lab</b><span>Audio Synth</span></div>
         </div>
     </div>
 
-    <div id="win-Matrix" class="win">
-        <div class="win-head"><span>Matrix Code Stream</span><span class="x-btn" onclick="closeWin('Matrix')">×</span></div>
-        <div class="win-body"><canvas id="matrix-canvas"></canvas></div>
-    </div>
-
-    <div id="win-NeonPath" class="win">
-        <div class="win-head"><span>AI Neon Path (Mini Game)</span><span class="x-btn" onclick="closeWin('NeonPath')">×</span></div>
-        <div class="win-body">
-            <div id="game-ui" style="position:absolute; top:10px; left:10px; color:#fff;">Score: <span id="score">0</span></div>
-            <canvas id="game-canvas"></canvas>
-        </div>
-    </div>
+    <div id="win-Tunnel" class="window"><div class="win-header"><span>Neon Tunnel 3D</span><span class="close-btn" onclick="closeApp('Tunnel')">×</span></div><div class="win-body"><canvas id="tunnel-canvas"></canvas></div></div>
+    <div id="win-Defender" class="window"><div class="win-header"><span>Star Defender Arcade</span><span class="close-btn" onclick="closeApp('Defender')">×</span></div><div class="win-body"><canvas id="defender-canvas"></canvas></div></div>
 
     <div id="ghost">
         <div class="g-nav">
             <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_92x30dp.png" width="92" style="position:absolute; left:30px; top:25px;">
-            <input type="text" style="width: 692px; height: 46px; background: #303134; border: 1px solid #3c4043; border-radius: 24px; padding: 0 20px; color: white;" value="most important black history figures">
+            <input type="text" class="g-input-box" value="most important black history figures">
         </div>
         <div class="g-results" id="ghost-results"></div>
     </div>
 
     <script>
-        // GENERATE 50+ WIDGETS
+        // MASSIVE GRID GENERATOR (50+ Items)
         const grid = document.getElementById('main-grid');
-        const tools = ["LogicMap", "NetPing", "HexEdit", "DataVault", "SysLog", "Kernel", "Vector", "BitShift"];
-        const icons = ["🛠️", "📡", "🔢", "🔐", "📋", "⚙️", "📐", "💾"];
-        for(let i=0; i<45; i++) {
-            let r = i % tools.length;
-            grid.innerHTML += `<div class="item" onclick="alert('Module ${i} requires C++ Link')"><i>${icons[r]}</i><b>${tools[r]}_${i}</b></div>`;
+        const extras = ["Network", "Security", "Analytics", "Database", "Node", "Encryption", "Cloud", "Script"];
+        const icons = ["📡", "🛡️", "📊", "🗄️", "🖥️", "🔐", "☁️", "📄"];
+        for(let i=1; i<=50; i++) {
+            let r = i % extras.length;
+            grid.innerHTML += `<div class="widget" onclick="alert('Module active in background.')"><i>${icons[r]}</i><b>${extras[r]} System ${i}</b><span>System Integrated</span></div>`;
         }
 
-        // GENERATE 50+ GOOGLE RESULTS
-        const gResults = document.getElementById('ghost-results');
+        // MASSIVE GOOGLE RESULTS GENERATOR (Deep Scroll)
+        const gRes = document.getElementById('ghost-results');
+        const historyLinks = [
+            {t: "Martin Luther King Jr. - Biography and Impact", c: "history.com › topics › mlk"},
+            {t: "Harriet Tubman: The Underground Railroad Leader", c: "biography.com › activist › tubman"},
+            {t: "Rosa Parks: The Mother of the Civil Rights Movement", c: "britannica.com › rosa-parks"}
+        ];
         for(let i=0; i<60; i++) {
-            gResults.innerHTML += `
-                <div class="g-card">
-                    <h3>Historical Significance of Figure #${i+1}</h3>
-                    <p>Analysis of social impact and leadership during key historical periods. Source verified by ResearchGate.</p>
-                </div>`;
+            let item = historyLinks[i % 3];
+            gRes.innerHTML += `<div class="g-res-card"><cite>${item.c}</cite><h3>${item.t} #${i+1}</h3><p>Comprehensive research on the legacy and social influence of key historical figures during the 20th century civil rights movements.</p></div>`;
         }
 
-        // WINDOW CONTROLS
-        function openWin(id) { document.getElementById('win-' + id).style.display = 'flex'; if(id==='NeonPath') startNeonGame(); }
-        function closeWin(id) { document.getElementById('win-' + id).style.display = 'none'; }
+        // WINDOW MANAGER
+        function openApp(id) { 
+            document.getElementById('win-' + id).style.display = 'flex';
+            if(id === 'Tunnel') initTunnel();
+            if(id === 'Defender') initDefender();
+        }
+        function closeApp(id) { document.getElementById('win-' + id).style.display = 'none'; }
 
-        // GHOST MODE ESC LOGIC
+        // GHOST MODE ESCAPE KEY
         document.addEventListener('keydown', (e) => {
             if (e.key === "Escape") {
                 const ghost = document.getElementById('ghost');
-                const isOff = ghost.style.display === 'none' || ghost.style.display === '';
-                ghost.style.display = isOff ? 'block' : 'none';
-                document.title = isOff ? "most important black history figures - Google Search" : "Google Docs - Dev Workspace";
+                const isHidden = ghost.style.display === 'none' || ghost.style.display === '';
+                ghost.style.display = isHidden ? 'block' : 'none';
+                document.title = isHidden ? "most important black history figures - Google Search" : "Google Docs - Collaborative Hub";
+                if(isHidden) window.scrollTo(0, 0);
             }
         });
 
-        // AI MINI GAME: NEON PATH
-        function startNeonGame() {
-            const canvas = document.getElementById('game-canvas');
+        // BUILT-IN ARCADE GAME: STAR DEFENDER
+        function initDefender() {
+            const canvas = document.getElementById('defender-canvas');
             const ctx = canvas.getContext('2d');
-            let player = { x: 50, y: 150, w: 20, h: 20 };
-            let obstacles = [];
-            let score = 0;
-            function update() {
-                ctx.fillStyle = "#000"; ctx.fillRect(0,0,canvas.width,canvas.height);
-                ctx.fillStyle = "#58a6ff"; ctx.fillRect(player.x, player.y, player.w, player.h);
-                if(Math.random() < 0.05) obstacles.push({x: 600, y: Math.random()*300, w: 20, h: 20});
-                obstacles.forEach((o, i) => {
-                    o.x -= 5; ctx.fillStyle = "#f85149"; ctx.fillRect(o.x, o.y, o.w, o.h);
-                    if(o.x < -20) { obstacles.splice(i, 1); score++; document.getElementById('score').innerText = score; }
-                });
-                requestAnimationFrame(update);
+            canvas.width = 700; canvas.height = 450;
+            let ship = {x: 350, y: 400, w: 20, h: 20};
+            let bullets = [];
+            function draw() {
+                ctx.fillStyle = '#000'; ctx.fillRect(0,0,700,450);
+                ctx.fillStyle = '#58a6ff'; ctx.fillRect(ship.x, ship.y, 20, 20);
+                bullets.forEach((b, i) => { b.y -= 7; ctx.fillStyle = '#ff5f56'; ctx.fillRect(b.x, b.y, 4, 10); if(b.y < 0) bullets.splice(i, 1); });
+                requestAnimationFrame(draw);
             }
-            update();
-            window.onkeydown = (e) => { if(e.key === 'w') player.y -= 20; if(e.key === 's') player.y += 20; };
+            draw();
+            window.addEventListener('keydown', (e) => {
+                if(e.key === 'a') ship.x -= 20; if(e.key === 'd') ship.x += 20; if(e.key === ' ') bullets.push({x: ship.x + 8, y: ship.y});
+            });
+        }
+
+        // BUILT-IN VISUALIZER: NEON TUNNEL
+        function initTunnel() {
+            const canvas = document.getElementById('tunnel-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 700; canvas.height = 450;
+            let angle = 0;
+            function animate() {
+                ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.fillRect(0,0,700,450);
+                let x = 350 + Math.cos(angle) * 100;
+                let y = 225 + Math.sin(angle) * 100;
+                ctx.strokeStyle = '#58a6ff'; ctx.strokeRect(x-50, y-50, 100, 100);
+                angle += 0.05;
+                requestAnimationFrame(animate);
+            }
+            animate();
         }
     </script>
 </body>
