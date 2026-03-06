@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ICE AGE: THE FINAL MASTERPIECE | OMEGA</title>
+    <title>ICE AGE: THE ACORN PURSUIT</title>
     
     <style>
         /* ==========================================================================
@@ -37,7 +37,7 @@
             width: 100vw; height: 100vh;
             background-color: var(--dark);
             color: var(--text-main); font-family: 'Montserrat', sans-serif;
-            overflow: hidden; touch-action: none; /* PREVENTS ALL SCROLLING */
+            overflow: hidden; touch-action: none;
         }
 
         /* ==========================================================================
@@ -49,7 +49,6 @@
         #layer-ambient { z-index: -10; filter: blur(60px); opacity: 0.6; }
         #layer-particles { z-index: 9000; }
 
-        /* Multi-layered Liquid Glass Utility */
         .liquid-glass {
             background: var(--glass-bg);
             backdrop-filter: blur(20px) saturate(150%);
@@ -70,7 +69,6 @@
             position: relative; z-index: 10;
         }
 
-        /* Responsive Breakpoint: Stack vertically on mobile, but clamp heights to prevent scrolling */
         @media (max-width: 1000px), (orientation: portrait) {
             #game-client { flex-direction: column; }
             #ui-sector { flex: 1 1 45% !important; max-width: 100% !important; height: auto !important; }
@@ -82,7 +80,6 @@
             min-width: 0; min-height: 0;
         }
 
-        /* The Clamp: Forces the board to shrink to fit the screen */
         #board-clamp {
             width: 100%; height: 100%; max-width: 100%; max-height: 100%;
             display: flex; align-items: center; justify-content: center;
@@ -91,7 +88,7 @@
         #tactical-board {
             display: grid; 
             width: 100%; height: 100%; max-width: 100%; max-height: 100%;
-            aspect-ratio: var(--board-ratio, 1/1); /* Controlled dynamically in JS */
+            aspect-ratio: var(--board-ratio, 1/1);
             padding: clamp(4px, 1vmin, 12px); gap: clamp(2px, 0.5vmin, 6px);
             background: rgba(0,0,0,0.6); border-radius: 16px;
             box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 0 20px rgba(0,229,255,0.1);
@@ -103,7 +100,7 @@
         }
 
         /* ==========================================================================
-           4. PROCEDURAL SPACES & CSS ART TERRAINS (THE DETAILED BIOMES)
+           4. PROCEDURAL SPACES & CSS ART TERRAINS
            ========================================================================== */
         .board-space {
             background: rgba(255, 255, 255, 0.95);
@@ -124,7 +121,6 @@
         .space-vault { background: linear-gradient(135deg, var(--green), #bbf7d0) !important; color: #064e3b; }
         .space-event { background: #ffedd5 !important; color: #c2410c; }
 
-        /* --- THE DETAILED CENTER BIOMES --- */
         #center-core {
             grid-column: 2 / -2; grid-row: 2 / -2;
             display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
@@ -134,32 +130,16 @@
         }
         
         .biome { position: relative; overflow: hidden; }
-
-        /* 1. Grassy Plains: Rolling wind waves with repeating linear gradients */
         .biome-grass { background: linear-gradient(120deg, #558b2f, #7cb342, #33691e); background-size: 200% 200%; animation: bgShift 6s ease-in-out infinite; }
-        .biome-grass::after { 
-            content: ''; position: absolute; inset: -50%; 
-            background: repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(255,255,255,0.08) 30px, rgba(255,255,255,0.08) 60px); 
-            animation: slideWind 3s linear infinite; transform: rotate(-15deg); 
-        }
-
-        /* 2. Mountain Peaks: Multi-layered parallax jagged rocks using clip-path */
+        .biome-grass::after { content: ''; position: absolute; inset: -50%; background: repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(255,255,255,0.08) 30px, rgba(255,255,255,0.08) 60px); animation: slideWind 3s linear infinite; transform: rotate(-15deg); }
         .biome-peaks { background: linear-gradient(180deg, #37474f, #1c313a); }
         .biome-peaks::before, .biome-peaks::after { content: ''; position: absolute; bottom: 0; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
         .biome-peaks::before { background: #546e7a; width: 120%; height: 70%; left: -10%; animation: panMountain 12s linear infinite alternate; }
         .biome-peaks::after { background: #78909c; width: 80%; height: 50%; left: 30%; animation: panMountain 8s linear infinite alternate-reverse; }
-
-        /* 3. Village Outpost: Glowing pulsating campfire light with flicker overlay */
         .biome-village { background: radial-gradient(circle at 50% 60%, #e65100 0%, #5d4037 50%, #111 100%); background-size: 150% 150%; animation: firePulse 1.5s infinite alternate; }
         .biome-village::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle, rgba(255,255,255,0.15) 10%, transparent 60%); animation: flicker 0.3s infinite alternate; }
-
-        /* 4. Frozen Tundra: CSS Multi-layered Blizzard */
         .biome-tundra { background: linear-gradient(to bottom, #b2ebf2, #0097a7); }
-        .biome-tundra::before { 
-            content: ''; position: absolute; top: -100%; left: -50%; width: 200%; height: 200%; 
-            background-image: radial-gradient(circle, #FFF 3px, transparent 4px), radial-gradient(circle, #FFF 1px, transparent 2px); 
-            background-size: 40px 40px, 20px 20px; animation: blizzardFall 2.5s linear infinite; transform: rotate(15deg); 
-        }
+        .biome-tundra::before { content: ''; position: absolute; top: -100%; left: -50%; width: 200%; height: 200%; background-image: radial-gradient(circle, #FFF 3px, transparent 4px), radial-gradient(circle, #FFF 1px, transparent 2px); background-size: 40px 40px, 20px 20px; animation: blizzardFall 2.5s linear infinite; transform: rotate(15deg); }
 
         @keyframes bgShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes slideWind { from { transform: translateX(0) rotate(-15deg); } to { transform: translateX(60px) rotate(-15deg); } }
@@ -188,7 +168,6 @@
            ========================================================================== */
         #hud-container { flex: 1 1 auto; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 10px; }
@@ -206,9 +185,8 @@
 
         .card-header { display: flex; justify-content: space-between; align-items: center; }
         .entity-name { font-size: 1.1rem; font-weight: 900; text-transform: uppercase; }
-        .entity-wealth { color: var(--gold); font-size: 1.3rem; font-weight: 900; text-shadow: 0 0 10px rgba(255,215,0,0.3); }
+        .entity-wealth { color: var(--gold); font-size: 1.5rem; font-weight: 900; text-shadow: 0 0 10px rgba(255,215,0,0.3); }
         
-        .resource-bar { display: flex; gap: 8px; font-size: 0.85rem; background: rgba(0,0,0,0.4); padding: 6px; border-radius: 8px; font-weight: 700; }
         .inv-grid { display: flex; flex-wrap: wrap; gap: 5px; min-height: 24px; }
         .item-pill { background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer; border: 1px solid transparent; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
         .item-pill:hover { background: var(--cyan); color: #000; border-color: #fff; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,229,255,0.4); }
@@ -238,7 +216,7 @@
         @keyframes slideInLeft { to { opacity: 1; transform: translateX(0); } }
 
         /* ==========================================================================
-           7. MODALS, INSTRUCTIONS & CRAFTING
+           7. MODALS & INSTRUCTIONS
            ========================================================================== */
         .overlay-mask { position: fixed; inset: 0; background: rgba(5,10,15,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 15px; }
         .modal-box { width: 100%; max-width: 650px; max-height: 95vh; overflow-y: auto; padding: 35px; text-align: center; position: relative; }
@@ -246,27 +224,22 @@
         .config-row { background: rgba(0,0,0,0.5); padding: 12px; border-radius: 10px; display: flex; gap: 12px; margin-bottom: 12px; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
         .config-row select, .config-row input { flex: 1; background: #000; border: 1px solid var(--cyan); color: #fff; padding: 12px; border-radius: 8px; font-family: inherit; font-size: 1rem; font-weight: bold; }
         
-        /* Instructions Formatting */
         .instr-list { text-align: left; display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
         .instr-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border-left: 4px solid var(--cyan); font-size: 0.95rem; line-height: 1.4; }
         .instr-item b { color: var(--gold); }
 
-        /* Shop Grid */
         .shop-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
         .shop-card { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 10px; transition: 0.2s; }
         .shop-card:hover { border-color: var(--cyan); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,229,255,0.15); }
-        .recipe-cost { display: flex; justify-content: center; gap: 10px; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; }
+        .recipe-cost { display: flex; justify-content: center; gap: 10px; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; color: var(--gold); }
         
-        /* Dice Cam */
         .dice-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; }
         .dice-cube { width: 140px; height: 140px; background: #fff; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 80px; color: #000; box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 -10px 20px rgba(0,0,0,0.2); border: 4px solid #eee; }
         .anim-rumble { animation: rumbleShake 0.2s infinite; }
         @keyframes rumbleShake { 0% { transform: translate(3px, 3px) rotate(0deg); } 25% { transform: translate(-3px, -2px) rotate(-5deg); } 50% { transform: translate(0px, 4px) rotate(5deg); } 75% { transform: translate(3px, -2px) rotate(-2deg); } 100% { transform: translate(-2px, 3px) rotate(2deg); } }
 
-        /* Floating Damage Text */
         .float-fx { position: absolute; font-weight: 900; font-size: 2.5rem; pointer-events: none; z-index: 9500; animation: floatUpFade 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; text-shadow: 0 4px 15px rgba(0,0,0,0.9); }
         @keyframes floatUpFade { 0% { opacity: 0; transform: translateY(20px) scale(0.5); } 20% { opacity: 1; transform: translateY(0) scale(1.2); } 100% { opacity: 0; transform: translateY(-80px) scale(1); } }
-
     </style>
 </head>
 <body>
@@ -276,8 +249,8 @@
 
     <div id="modal-config" class="overlay-mask" style="display: flex;">
         <div class="modal-box liquid-glass">
-            <h1 style="font-size: 3rem; margin-bottom: 5px; color: #fff;">ICE AGE <span style="color: var(--cyan);">OMEGA</span></h1>
-            <p style="color: #aaa; margin-bottom: 20px; font-weight: bold; letter-spacing: 2px;">STRICT LAYOUT EDITION</p>
+            <h1 style="font-size: 3rem; margin-bottom: 5px; color: #fff;">ICE AGE <span style="color: var(--gold);">ACORNS</span></h1>
+            <p style="color: #aaa; margin-bottom: 20px; font-weight: bold; letter-spacing: 2px;">THE SQUIRREL SURVIVAL EDITION</p>
             
             <div id="config-error" style="color:var(--red); font-weight:bold; margin-bottom:15px; display:none;"></div>
 
@@ -300,30 +273,29 @@
 
             <div id="entity-input-zone" style="margin-top: 20px;"></div>
 
-            <button class="btn" style="width: 100%; margin-top: 25px; background: linear-gradient(180deg, var(--gold), #FF8F00); box-shadow: 0 6px 0 #b45309;" onclick="Omega.initialize()">IGNITE ENGINE</button>
+            <button class="btn" style="width: 100%; margin-top: 25px; background: linear-gradient(180deg, var(--gold), #FF8F00); box-shadow: 0 6px 0 #b45309;" onclick="Omega.initialize()">START HUNTING</button>
             <button class="btn btn-info" style="width: 100%; margin-top: 10px;" onclick="Overlay.openInstructions()">HOW TO PLAY</button>
         </div>
     </div>
 
     <div id="modal-instructions" class="overlay-mask">
         <div class="modal-box liquid-glass" style="max-width: 700px;">
-            <h2 style="color: var(--cyan); font-size: 2.5rem;">SURVIVAL MANUAL</h2>
+            <h2 style="color: var(--gold); font-size: 2.5rem;">SURVIVAL MANUAL</h2>
             
             <div class="instr-list">
-                <div class="instr-item"><b>OBJECTIVE:</b> Secure 3 full orbits (laps) around the grid to win.</div>
-                <div class="instr-item"><b>RESOURCES:</b> Land on blue resource tiles to harvest Wood (🪵), Ice (🧊), and Crystal (💎).</div>
-                <div class="instr-item"><b>SYNTHESIS:</b> The purple CRAFT spaces let you build powerful items using your harvested resources.</div>
-                <div class="instr-item"><b>ACORNS & VAULT:</b> Golden Acorns (🌰) are currency. Landing on the Vault awards you the jackpot!</div>
+                <div class="instr-item"><b>OBJECTIVE:</b> Secure 3 full orbits (laps) around the grid to win!</div>
+                <div class="instr-item"><b>THE STASH:</b> Everyone starts with 4 Golden Acorns (🌰).</div>
+                <div class="instr-item"><b>HOARDING:</b> Land on blue tiles to gather +1 or +2 Acorns. Passing Start also gives you +5 🌰!</div>
+                <div class="instr-item"><b>THE SHOP:</b> The purple SHOP spaces let you spend your hard-earned Acorns on power-ups.</div>
                 <div class="instr-item"><b>COMBAT:</b> Landing on an occupied space triggers a Duel. The winner steals 2 🌰!</div>
-                <div class="instr-item"><b>ITEMS:</b> Click items in your inventory to use them. <b>Aegis Shield</b> blocks traps and duels. <b>Warp Drive</b> shoots you forward.</div>
+                <div class="instr-item"><b>THE VAULT:</b> Tax events drain acorns into the Vault. Land on the Vault space to steal the jackpot!</div>
             </div>
 
-            <button class="btn" style="width: 100%;" onclick="Overlay.close('modal-instructions')">CLOSE MANUAL</button>
+            <button class="btn" style="width: 100%; background: linear-gradient(180deg, var(--gold), #FF8F00);" onclick="Overlay.close('modal-instructions')">GOT IT</button>
         </div>
     </div>
 
     <main id="game-client" style="display: none;">
-        
         <section id="board-sector">
             <div id="board-clamp">
                 <div id="tactical-board" class="liquid-glass">
@@ -338,8 +310,7 @@
         </section>
 
         <section id="ui-sector">
-            <div id="hud-container" class="liquid-glass">
-                </div>
+            <div id="hud-container" class="liquid-glass"></div>
 
             <div id="command-center" class="liquid-glass">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -378,14 +349,14 @@
         </div>
     </div>
 
-    <div id="modal-synth" class="overlay-mask">
+    <div id="modal-shop" class="overlay-mask">
         <div class="modal-box liquid-glass" style="max-width: 800px;">
-            <h2 style="color: var(--purple); font-size: 2.5rem;">TRADING POST</h2>
-            <div id="synth-wallet" style="margin: 15px 0; font-size: 1.2rem; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);"></div>
+            <h2 style="color: var(--purple); font-size: 2.5rem;">ACORN SHOP</h2>
+            <div id="shop-wallet" style="margin: 15px 0; font-size: 1.5rem; font-weight: bold; color: var(--gold); background: rgba(0,0,0,0.6); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);"></div>
             
-            <div class="shop-matrix" id="synth-schematics"></div>
+            <div class="shop-matrix" id="shop-items"></div>
             
-            <button class="btn" style="width: 100%; background: #333; box-shadow: 0 6px 0 #111; color: #fff; margin-top: 10px;" onclick="Overlay.close('modal-synth'); Omega.finalizeTurn();">EXIT SHOP</button>
+            <button class="btn" style="width: 100%; background: #333; box-shadow: 0 6px 0 #111; color: #fff; margin-top: 10px;" onclick="Overlay.close('modal-shop'); Omega.finalizeTurn();">EXIT SHOP</button>
         </div>
     </div>
 
@@ -393,14 +364,11 @@
 <script>
 /**
  * ============================================================================
- * ICE AGE: OMEGA ENGINE
- * Features: CSS Art Biomes, Web Audio Synth, 60FPS Particles, Strict Flex Clamp
+ * ICE AGE: THE ACORN PURSUIT
+ * Pure Acorn-Hoarding Ruleset
  * ============================================================================
  */
 
-// ============================================================================
-// 1. HARDWARE SUBSYSTEMS (Audio & Particles)
-// ============================================================================
 class WebAudioSynth {
     constructor() {
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -419,7 +387,7 @@ class WebAudioSynth {
     sfxHop() { this._play(450, 'sine', 0.1, 0.5); setTimeout(() => this._play(650, 'sine', 0.15, 0.4), 80); }
     sfxCoin() { this._play(1200, 'square', 0.1, 0.3); setTimeout(() => this._play(1800, 'square', 0.2, 0.3), 100); }
     sfxImpact() { this._play(100, 'sawtooth', 0.4, 1.0); }
-    sfxSynth() { this._play(800, 'triangle', 0.15, 0.6); setTimeout(() => this._play(1200, 'triangle', 0.3, 0.6), 120); }
+    sfxBuy() { this._play(800, 'triangle', 0.15, 0.6); setTimeout(() => this._play(1200, 'triangle', 0.3, 0.6), 120); }
     sfxError() { this._play(150, 'square', 0.3, 0.8); }
     unlock() { if (this.ctx.state === 'suspended') this.ctx.resume(); }
 }
@@ -464,7 +432,6 @@ class ParticlePhysics {
 }
 const ParticleSYS = new ParticlePhysics();
 
-// Ambient Canvas Animation
 (function initAmbient() {
     const c = document.getElementById('layer-ambient'), ctx = c.getContext('2d');
     function render() {
@@ -482,40 +449,32 @@ const ParticleSYS = new ParticlePhysics();
     render();
 })();
 
-// ============================================================================
-// 2. DATA BLUEPRINTS
-// ============================================================================
 const DB = {
     colors: ['#00E5FF', '#D500F9', '#00E676', '#FFD700'],
-    icons: ['🦖','🦣','🐺','🐻‍❄️','🧊','🏔️','🐧','🐗'],
+    icons: ['🐿️','🦣','🐻‍❄️','🐧','🐺','🦌','🦊','🦉'], // Squirrel is star of the show
     profanity: /fuck|shit|bitch|nigg|cunt|whore|slut|fag|dick|pussy|cock/i,
     
     spaces: [
-        { name: '+1 🪵', action: 'wood', css: 'space-harvest', w: 20 },
-        { name: '+1 🧊', action: 'ice', css: 'space-harvest', w: 20 },
-        { name: '+1 💎', action: 'crystal', css: 'space-harvest', w: 10 },
-        { name: '+2 🌰', action: 'acorns_2', css: 'space-start', w: 20 },
-        { name: 'CRAFT', action: 'craft', css: 'space-shop', w: 15 },
+        { name: '+1 🌰', action: 'acorns_1', css: 'space-harvest', w: 35 },
+        { name: '+2 🌰', action: 'acorns_2', css: 'space-harvest', w: 20 },
+        { name: 'SHOP', action: 'shop', css: 'space-shop', w: 15 },
         { name: 'TRAP', action: 'trap', css: 'space-hazard', w: 10 },
         { name: 'VAULT', action: 'vault', css: 'space-vault', w: 5 },
-        { name: 'EVENT', action: 'event', css: 'space-event', w: 10 }
+        { name: 'EVENT', action: 'event', css: 'space-event', w: 15 }
     ],
 
     items: {
-        'warp_drive': { name: 'Warp Drive', icon: '🚀', req: {wood:1, crystal:1}, desc: 'Instantly advance 6 spaces.' },
-        'aegis': { name: 'Aegis Shield', icon: '🛡️', req: {wood:2, ice:1}, desc: 'Absorbs next trap or duel loss.' },
-        'siphon': { name: 'Core Siphon', icon: '🧲', req: {ice:2, crystal:1}, desc: 'Steal 1 🌰 from all opponents.' }
+        'warp_drive': { name: 'Acorn Rocket', icon: '🚀', req: 3, desc: 'Instantly advance 6 spaces.' },
+        'aegis': { name: 'Nut Shield', icon: '🛡️', req: 4, desc: 'Absorbs next trap or duel loss.' },
+        'siphon': { name: 'Acorn Magnet', icon: '🧲', req: 5, desc: 'Steal 1 🌰 from all opponents.' }
     }
 };
 
-// ============================================================================
-// 3. CORE ENGINE & LOGIC
-// ============================================================================
 class Entity {
     constructor(id, name, color, icon) {
         this.id = id; this.name = name; this.color = color; this.icon = icon;
-        this.pos = 0; this.laps = 0; this.acorns = 5;
-        this.res = { wood: 0, ice: 0, crystal: 0 };
+        this.pos = 0; this.laps = 0; 
+        this.acorns = 4; // Start with 4 acorns as discussed!
         this.inv = []; this.status = { skip: false, shield: false };
     }
     modifyWealth(amt) {
@@ -524,7 +483,6 @@ class Entity {
         Overlay.floatText(`nest-${this.pos}`, amt < 0 ? `-${actual}` : `+${actual}`, amt < 0 ? 'var(--red)' : 'var(--green)');
         return actual;
     }
-    modifyResource(type, amt) { this.res[type] += amt; Overlay.log(`<strong>${this.name}</strong> harvested ${amt} ${type.toUpperCase()}`); }
 }
 
 const Omega = {
@@ -534,11 +492,8 @@ const Omega = {
     initialize() {
         AudioSYS.unlock();
         const err = document.getElementById('config-error'); err.style.display = 'none';
-        
         this.size = parseInt(document.getElementById('cfg-grid-size').value);
         
-        // Strict Perimeter Math: P = 2W + 2H - 4. 
-        // 36 => 10x10. 50 => 14x13.
         let halfP = (this.size + 4) / 2;
         this.width = Math.ceil(halfP / 2); this.height = Math.floor(halfP / 2);
 
@@ -555,7 +510,7 @@ const Omega = {
         
         GridBuilder.construct(this.width, this.height, this.size);
         Interface.renderFull();
-        Overlay.log("=== OMEGA ENGINE ONLINE ===", "sys");
+        Overlay.log("=== THE HUNT BEGINS ===", "sys");
         this.beginTurn();
     },
 
@@ -564,7 +519,7 @@ const Omega = {
         Interface.updateHeader(e); Interface.renderFull();
 
         if (e.status.skip) {
-            Overlay.log(`<strong>${e.name}</strong> is frozen. Skip turn.`, "danger");
+            Overlay.log(`<strong>${e.name}</strong> is trapped. Skip turn.`, "danger");
             e.status.skip = false; setTimeout(() => this.finalizeTurn(), 1200); return;
         }
         document.getElementById('btn-trigger-roll').disabled = false;
@@ -593,7 +548,7 @@ const Omega = {
         if (e.pos >= this.size) {
             e.pos = 0; e.laps++;
             if(e.laps > 0) {
-                e.modifyWealth(5); Overlay.log(`<strong>${e.name}</strong> completed a lap! +5 🌰`, 'alert');
+                e.modifyWealth(5); Overlay.log(`<strong>${e.name}</strong> completed an orbit! +5 🌰`, 'alert');
                 AudioSYS.sfxCoin(); ParticleSYS.burstAt('center-core', varColor('--gold'), 40);
                 if (e.laps >= 3) { this.triggerVictory(e); return; }
             }
@@ -614,8 +569,8 @@ const Omega = {
 
     executeCombat(a, d, cb) {
         let win = Math.random() > 0.5 ? a : d, lose = win === a ? d : a;
-        Overlay.alert("COMBAT PROTOCOL", `${win.name} overpowered ${lose.name}!`, () => {
-            if(lose.status.shield) { Overlay.log(`${lose.name}'s Aegis Shield absorbed the hit!`); lose.status.shield = false; ParticleSYS.burstAt(`tok-${lose.id}`, varColor('--cyan'), 20); } 
+        Overlay.alert("COMBAT", `${win.name} overpowered ${lose.name}!`, () => {
+            if(lose.status.shield) { Overlay.log(`${lose.name}'s Nut Shield absorbed the hit!`); lose.status.shield = false; ParticleSYS.burstAt(`tok-${lose.id}`, varColor('--cyan'), 20); } 
             else { let st = lose.modifyWealth(-2); win.modifyWealth(st); AudioSYS.sfxImpact(); }
             cb();
         });
@@ -627,12 +582,10 @@ const Omega = {
 
         switch(sector.action) {
             case 'start': this.finalizeTurn(); break;
-            case 'wood': e.modifyResource('wood', 1); AudioSYS.sfxCoin(); this.finalizeTurn(); break;
-            case 'ice': e.modifyResource('ice', 1); AudioSYS.sfxCoin(); this.finalizeTurn(); break;
-            case 'crystal': e.modifyResource('crystal', 1); AudioSYS.sfxCoin(); this.finalizeTurn(); break;
+            case 'acorns_1': e.modifyWealth(1); AudioSYS.sfxCoin(); this.finalizeTurn(); break;
             case 'acorns_2': e.modifyWealth(2); AudioSYS.sfxCoin(); this.finalizeTurn(); break;
-            case 'craft': Overlay.openSynth(e); break;
-            case 'trap': e.status.skip = true; AudioSYS.sfxImpact(); Overlay.alert("TRAP", "Frozen! Lose next turn.", () => this.finalizeTurn()); break;
+            case 'shop': Overlay.openShop(e); break;
+            case 'trap': e.status.skip = true; AudioSYS.sfxImpact(); Overlay.alert("TRAP", "Caught! Lose next turn.", () => this.finalizeTurn()); break;
             case 'vault':
                 if(this.state.vault > 0) {
                     let v = this.state.vault; this.state.vault = 0; e.modifyWealth(v); AudioSYS.sfxCoin();
@@ -646,18 +599,20 @@ const Omega = {
 
     triggerRandomEvent(e) {
         let evs = [
-            { t: "BOUNTY", d: "Found hidden fragments. +3 🌰", f: () => { e.modifyWealth(3); this.finalizeTurn(); } },
-            { t: "TAX", d: "System tax. Drop 2 🌰 into the vault.", f: () => { let l = e.modifyWealth(-2); this.state.vault += l; this.finalizeTurn(); } },
-            { t: "WARP", d: "Wormhole! Advance 4 spaces.", f: () => { this.state.isAnim = true; this.executeMovement(e, 4, true); } }
+            { t: "LUCKY FIND", d: "Found an abandoned stash! +3 🌰", f: () => { e.modifyWealth(3); this.finalizeTurn(); } },
+            { t: "WINTER TAX", d: "A blizzard hit. Drop 2 🌰 into the vault.", f: () => { let l = e.modifyWealth(-2); this.state.vault += l; this.finalizeTurn(); } },
+            { t: "WIND GUST", d: "Blown forward! Advance 4 spaces.", f: () => { this.state.isAnim = true; this.executeMovement(e, 4, true); } }
         ];
         let rnd = evs[Math.floor(Math.random()*evs.length)]; Overlay.alert(`EVENT: ${rnd.t}`, rnd.d, rnd.f);
     },
 
-    synthesize(e, k) {
-        let r = DB.items[k].req; for(let q in r) if(e.res[q] < r[q]) return false;
-        for(let q in r) e.res[q] -= r[q]; e.inv.push(k);
-        AudioSYS.sfxSynth(); Overlay.log(`Synthesized [${DB.items[k].name}].`, 'sys');
-        Interface.renderFull(); Overlay.openSynth(e);
+    buyItem(e, k) {
+        let price = DB.items[k].req;
+        if(e.acorns < price) return false;
+        
+        e.modifyWealth(-price); e.inv.push(k);
+        AudioSYS.sfxBuy(); Overlay.log(`Bought [${DB.items[k].name}].`, 'sys');
+        Interface.renderFull(); Overlay.openShop(e);
     },
 
     deployItem(eId, k) {
@@ -667,7 +622,7 @@ const Omega = {
         let idx = e.inv.indexOf(k);
         if(idx > -1) {
             e.inv.splice(idx, 1); let item = DB.items[k];
-            Overlay.log(`Deployed ${item.icon} ${item.name}!`, 'alert'); AudioSYS.sfxSynth();
+            Overlay.log(`Used ${item.icon} ${item.name}!`, 'alert'); AudioSYS.sfxBuy();
 
             switch(k) {
                 case 'warp_drive': this.state.isAnim = true; this.executeMovement(e, 6, true); break;
@@ -680,17 +635,14 @@ const Omega = {
     },
 
     finalizeTurn() { this.state.turnIdx = (this.state.turnIdx + 1) % this.entities.length; this.beginTurn(); },
-    triggerVictory(e) { document.getElementById('game-client').style.filter = 'blur(15px)'; Overlay.alert("VICTORY", `<strong>${e.name.toUpperCase()}</strong> has won!`, () => location.reload()); }
+    triggerVictory(e) { document.getElementById('game-client').style.filter = 'blur(15px)'; Overlay.alert("VICTORY", `<strong>${e.name.toUpperCase()}</strong> completed 3 laps and won the game!`, () => location.reload()); }
 };
 
-// ============================================================================
-// 4. GRID BUILDER (Strict Flex-Clamp Integration)
-// ============================================================================
 const GridBuilder = {
     construct(w, h, size) {
         const grid = document.getElementById('tactical-board');
         grid.style.gridTemplateColumns = `repeat(${w}, 1fr)`; grid.style.gridTemplateRows = `repeat(${h}, 1fr)`;
-        grid.style.setProperty('--board-ratio', `${w}/${h}`); // Locks Aspect Ratio
+        grid.style.setProperty('--board-ratio', `${w}/${h}`);
         
         Array.from(grid.children).forEach(c => { if(c.id !== 'center-core') c.remove(); });
 
@@ -720,9 +672,6 @@ const GridBuilder = {
     }
 };
 
-// ============================================================================
-// 5. UI & OVERLAY CONTROLLER
-// ============================================================================
 const Interface = {
     setupInit() {
         const zone = document.getElementById('entity-input-zone');
@@ -746,9 +695,8 @@ const Interface = {
             hud.innerHTML += `
                 <div class="player-card ${active}" style="border-left-color: ${e.color}">
                     <div class="card-header"><span class="entity-name">${e.icon} ${e.name}</span><span class="entity-wealth">${e.acorns} 🌰</span></div>
-                    <div class="resource-bar"><span>🪵 ${e.res.wood}</span> | <span style="color:var(--cyan)">🧊 ${e.res.ice}</span> | <span style="color:var(--purple)">💎 ${e.res.crystal}</span></div>
-                    <div style="font-size:0.8rem; color:#aaa; display:flex; justify-content:space-between;"><span>Orbit: ${e.laps}/3</span>${e.status.shield ? '<span style="color:var(--cyan)">🛡️ SHIELD</span>' : ''}${e.status.skip ? '<span style="color:var(--red)">❄️ FROZEN</span>' : ''}</div>
-                    <div class="inv-grid">${invHTML}</div>
+                    <div style="font-size:0.8rem; color:#aaa; display:flex; justify-content:space-between; margin-top:5px;"><span>Laps Completed: ${e.laps}/3</span>${e.status.shield ? '<span style="color:var(--cyan)">🛡️ SHIELD</span>' : ''}${e.status.skip ? '<span style="color:var(--red)">❄️ TRAPPED</span>' : ''}</div>
+                    <div class="inv-grid" style="margin-top: 5px;">${invHTML}</div>
                 </div>`;
         });
         document.getElementById('ui-vault-val').innerText = Omega.state.vault;
@@ -779,20 +727,19 @@ const Overlay = {
         document.getElementById('modal-alert').style.display = 'flex'; document.getElementById('alert-title').innerText = title; document.getElementById('alert-message').innerHTML = msg;
         let btn = document.getElementById('alert-buttons'); btn.innerHTML = `<button class="btn" style="width:100%">OK</button>`; btn.querySelector('button').onclick = () => { this.close('modal-alert'); if(cb) cb(); };
     },
-    openSynth(e) {
-        document.getElementById('modal-synth').style.display = 'flex';
-        document.getElementById('synth-wallet').innerHTML = `AVAILABLE: 🪵 ${e.res.wood} | <span style="color:var(--cyan)">🧊 ${e.res.ice}</span> | <span style="color:var(--purple)">💎 ${e.res.crystal}</span>`;
-        let grid = document.getElementById('synth-schematics'); grid.innerHTML = '';
+    openShop(e) {
+        document.getElementById('modal-shop').style.display = 'flex';
+        document.getElementById('shop-wallet').innerHTML = `YOUR STASH: ${e.acorns} 🌰`;
+        let grid = document.getElementById('shop-items'); grid.innerHTML = '';
         for(let key in DB.items) {
-            let r = DB.items[key], canCraft = true, reqStr = [];
-            for(let q in r.req) { if(e.res[q] < r.req[q]) canCraft = false; let ico = q==='wood'?'🪵':q==='ice'?'🧊':'💎'; reqStr.push(`${ico} ${r.req[q]}`); }
+            let r = DB.items[key], canBuy = e.acorns >= r.req;
             grid.innerHTML += `
-                <div class="shop-card" style="opacity:${canCraft?1:0.4}">
+                <div class="shop-card" style="opacity:${canBuy?1:0.4}">
                     <div style="font-size:3rem;text-align:center;">${r.icon}</div>
                     <h3 style="color:var(--cyan);text-align:center;margin:5px 0;">${r.name}</h3>
                     <p style="font-size:0.85rem;color:#aaa;text-align:center;flex:1;">${r.desc}</p>
-                    <div class="recipe-cost">${reqStr.join(' + ')}</div>
-                    <button class="btn" style="padding:10px;font-size:1rem;margin-top:10px;" ${canCraft?'':'disabled'} onclick="Omega.synthesize(Omega.entities[Omega.state.turnIdx], '${key}')">CRAFT</button>
+                    <div class="recipe-cost">${r.req} 🌰</div>
+                    <button class="btn" style="padding:10px;font-size:1rem;margin-top:10px;" ${canBuy?'':'disabled'} onclick="Omega.buyItem(Omega.entities[Omega.state.turnIdx], '${key}')">BUY</button>
                 </div>`;
         }
     },
@@ -800,10 +747,8 @@ const Overlay = {
     close(id) { document.getElementById(id).style.display = 'none'; }
 };
 
-// Utils
 function varColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
-// Boot
 Interface.setupInit();
 
 </script>
